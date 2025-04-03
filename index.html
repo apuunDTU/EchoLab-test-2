@@ -957,8 +957,12 @@
             `;
         }
 
+        // Add console logging to help with debugging
+        console.log('Document loaded, starting to load projects and events');
+        
         // Load projects and events when the page loads
         document.addEventListener('DOMContentLoaded', function() {
+            console.log('DOM fully loaded');
             loadProjects();
             loadEvents();
         });
