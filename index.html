@@ -130,15 +130,19 @@
             object-fit: contain;
         }
 
+        /* Fixed grid container */
         .grid-container {
             display: grid;
             grid-template-columns: repeat(3, 1fr);
             gap: 2rem;
             max-width: 1600px;
             margin: 0 auto;
+            grid-auto-rows: 1fr; /* Make rows equal height */
         }
 
+        /* Fixed card heights */
         .card-section {
+            height: 100%;
             display: flex;
             flex-direction: column;
             margin-bottom: 2rem;
@@ -153,16 +157,22 @@
             position: relative;
             margin-bottom: 0;
             cursor: pointer;
+            display: flex;
+            flex-direction: column;
+            height: 100%;
+            flex: 1;
         }
 
+        /* Ensure consistent card links area */
         .card-links {
             display: flex;
             gap: 1rem;
             padding: 1rem 1.5rem;
             background: transparent;
-            margin-top: 0.5rem;
+            margin-top: auto; /* Push to bottom */
             position: relative;
             z-index: 1;
+            height: 70px; /* Fixed height for links area */
         }
 
         .card-links a {
@@ -175,6 +185,10 @@
             border: 1px solid #E83F48;
             border-radius: 2px;
             background: white;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            min-width: 100px; /* Minimum width for buttons */
         }
 
         .card-links a:hover {
@@ -182,9 +196,10 @@
             background: #E83F48;
         }
 
+        /* Fixed header height for images */
         .card-header {
             position: relative;
-            height: 230px;
+            height: 230px; /* Fixed height */
             overflow: hidden;
             padding: 1.5rem;
             margin-bottom: 0rem;
@@ -193,7 +208,7 @@
         .card-header img {
             width: 100%;
             height: 100%;
-            object-fit: cover;
+            object-fit: cover; /* Makes images cover the space without distortion */
         }
 
         .card-date {
@@ -210,20 +225,28 @@
             border: 1px solid rgba(3, 15, 79, 0.2);
         }
 
+        /* Fixed content area height */
         .card-content {
             padding: 0rem 1.5rem 1rem 1.5rem;
             display: grid;
             grid-template-columns: 1.1fr 0.9fr;
             gap: 1rem;
+            flex: 1; /* Allow this to expand */
+            min-height: 320px; /* Set a minimum height */
         }
 
+        /* Make both sides of content equal height */
         .card-left {
             padding-right: 1rem;
+            display: flex;
+            flex-direction: column;
         }
 
         .card-right {
             padding-left: 0.8rem;
             border-left: 1px solid rgba(3, 15, 79, 0.2);
+            display: flex;
+            flex-direction: column;
         }
 
         .project-title {
@@ -234,6 +257,22 @@
             margin-bottom: 1rem;
             line-height: 1.1;
             letter-spacing: -0.02em;
+        }
+
+        .card-preview {
+            font-family: 'Neo Sans Std', sans-serif;
+            color: #030F4F;
+            font-size: 0.6rem;
+            line-height: 1.3;
+            margin: 0;
+            padding: 0;
+            border: none;
+            max-height: 6em;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            display: -webkit-box;
+            -webkit-line-clamp: 5;
+            -webkit-box-orient: vertical;
         }
 
         .section {
@@ -268,6 +307,15 @@
             color: #030F4F;
         }
 
+        /* For overflow text */
+        .topic-content {
+            overflow: hidden;
+            text-overflow: ellipsis;
+            display: -webkit-box;
+            -webkit-line-clamp: 2;
+            -webkit-box-orient: vertical;
+        }
+
         .topic-content a {
             color: inherit;
             text-decoration: none;
@@ -279,16 +327,6 @@
             color: rgba(3, 15, 79, 0.7);
         }
 
-        .card-preview {
-            font-family: 'Neo Sans Std', sans-serif;
-            color: #030F4F;
-            font-size: 0.6rem;
-            line-height: 1.3;
-            margin: 0;
-            padding: 0;
-            border: none;
-        }
-
         /* Remove the hiding of detailed sections */
         .research-card .detailed-section {
             display: block;
@@ -297,6 +335,8 @@
         .lessons-list {
             list-style: none;
             margin-left: -0.2rem;
+            max-height: 4.5em;
+            overflow: hidden;
         }
 
         .lessons-list li {
@@ -319,6 +359,8 @@
             display: flex;
             flex-wrap: wrap;
             gap: 0.2rem;
+            max-height: 4.5em;
+            overflow: hidden;
         }
 
         .collaborator-list li:not(:last-child):after {
@@ -406,6 +448,9 @@
         .modal .card-preview {
             font-size: 1rem;
             line-height: 1.6;
+            max-height: none;
+            overflow: visible;
+            -webkit-line-clamp: unset;
         }
 
         .modal .section {
@@ -415,6 +460,8 @@
 
         .modal .lessons-list {
             margin-left: -0.2rem;
+            max-height: none;
+            overflow: visible;
         }
 
         .modal .lessons-list li {
@@ -425,10 +472,17 @@
 
         .modal .collaborator-list {
             gap: 0.5rem;
+            max-height: none;
+            overflow: visible;
         }
 
         .modal .collaborator-list li:not(:last-child):after {
             margin-left: 0.5rem;
+        }
+
+        .modal .topic-content {
+            overflow: visible;
+            -webkit-line-clamp: unset;
         }
 
         .close-modal {
