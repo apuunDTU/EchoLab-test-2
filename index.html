@@ -592,7 +592,7 @@
         </div>
     </div>
 
-    <script>
+<script>
         // Event modal functions
         function openEventModal(imagePath) {
             const modal = document.getElementById('eventModal');
@@ -930,10 +930,7 @@
             }
         ];
 
-        });
-    </script>
-</body>
-</html>
+        // Modified load function to include fallback
         document.addEventListener('DOMContentLoaded', function() {
             console.log('DOM loaded, starting to load content');
             console.log('Current pathname:', window.location.pathname);
@@ -965,3 +962,5 @@
                     });
                 }
             }, 3000); // Wait 3 seconds before showing fallback
+        });
+    </script>
