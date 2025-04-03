@@ -698,221 +698,135 @@
             `;
         }
         
-        // Helper function for safer date parsing
-        function parseDate(dateStr) {
-            try {
-                if (!dateStr) return new Date(0);
-                const parts = dateStr.split('.');
-                if (parts.length < 3) {
-                    // If we only have DD.MM format, add current year
-                    const currentYear = new Date().getFullYear();
-                    return new Date(currentYear, parseInt(parts[1]) - 1, parseInt(parts[0]));
-                }
-                // Full DD.MM.YYYY format
-                return new Date(parseInt(parts[2]), parseInt(parts[1]) - 1, parseInt(parts[0]));
-            } catch (e) {
-                console.error('Error parsing date:', dateStr, e);
-                return new Date(0); // Default to epoch
-            }
-        }
+        // Improved generateCard function with error checking
+function generateCard(cardData) {
+    try {
+        // Check if the required properties exist, use defaults if not
+        const title = cardData.title || "Untitled Project";
+        const date = cardData.date || "No date";
+        const preview = cardData.preview || "No description available";
+        const image = cardData.image || "assets/placeholder.jpg";
+        
+        // Check if sections exist
+        const sections = cardData.sections || {};
+        
+        // Get research topics or use defaults
+        const researchTopics = sections.researchTopics || { 
+            title: "Research Topics", 
+            content: ["No topics available"]
+        };
+        
+        // Get objectives or use defaults
+        const objectives = sections.objectives || {
+            title: "Objectives",
+            content: "No objectives specified"
+        };
+        
+        // Get methodology or use defaults
+        const methodology = sections.methodology || {
+            title: "Methodology",
+            content: "No methodology specified"
+        };
+        
+        // Get lessons or use defaults
+        const lessons = sections.lessons || {
+            title: "Key Insights",
+            content: ["No insights available"]
+        };
+        
+        // Get collaborators or use defaults
+        const collaborators = sections.collaborators || {
+            title: "Collaborators",
+            content: ["No collaborators listed"]
+        };
+        
+        // Get external links or use defaults
+        const externalLinks = cardData.externalLinks || {
+            project: "#",
+            publication: "#"
+        };
+        
+        // Ensure content arrays are properly formatted
+        const researchContent = Array.isArray(researchTopics.content) 
+            ? researchTopics.content.join(' - ')
+            : researchTopics.content || "No content available";
+        
+        const lessonsContent = Array.isArray(lessons.content)
+            ? lessons.content.map(lesson => `<li>${lesson}</li>`).join('')
+            : `<li>${lessons.content || "No lessons available"}</li>`;
+        
+        const collaboratorsContent = Array.isArray(collaborators.content)
+            ? collaborators.content.map(collaborator => `<li>${collaborator}</li>`).join('')
+            : `<li>${collaborators.content || "No collaborators listed"}</li>`;
+        
+        return `
+            <div class="card-section">
+                <article class="research-card" onclick="openModal(this)">
+                    <header class="card-header">
+                        <img src="${image}" alt="${title}">
+                        <div class="card-date">${date}</div>
+                    </header>
+                    <div class="card-content">
+                        <div class="card-left">
+                            <h2 class="project-title">${title}</h2>
+                            <p class="card-preview">${preview}</p>
+                        </div>
+                        <div class="card-right">
+                            <section class="section">
+                                <h3 class="section-title">${researchTopics.title}</h3>
+                                <p class="topic-content">
+                                    ${researchContent}
+                                </p>
+                            </section>
 
-        // Updated loadEvents function with more path options
-        async function loadEvents() {
-            const eventsList = document.getElementById('eventsList');
-            
-            try {
-                // Calculate base URL for GitHub Pages with multiple options
-                const baseUrl = window.location.pathname.includes('github.io') ? 
-                    window.location.pathname.split('/').slice(0, -1).join('/') : '';
-                
-                // Try multiple path variations (including lowercase/uppercase)
-                const pathsToTry = [
-                    `${baseUrl}/Events/events.json`,
-                    `${baseUrl}/events/events.json`,
-                    `${baseUrl}/Events/event.json`,
-                    `${baseUrl}/events/event.json`,
-                    `${baseUrl}/events.json`,
-                    `./Events/events.json`,
-                    `./events/events.json`
-                ];
-                
-                let eventsData = null;
-                let successPath = '';
-                
-                // Try each path until one works
-                for (const path of pathsToTry) {
-                    try {
-                        console.log(`Trying to load events from: ${path}`);
-                        const response = await fetch(path);
-                        
-                        if (response.ok) {
-                            const data = await response.json();
-                            console.log(`Successfully loaded events from: ${path}`);
-                            
-                            // Extract events data
-                            if (data.events && Array.isArray(data.events)) {
-                                eventsData = data.events;
-                            } else if (Array.isArray(data)) {
-                                eventsData = data;
-                            }
-                            
-                            if (eventsData && eventsData.length > 0) {
-                                successPath = path;
-                                break;
-                            }
-                        }
-                    } catch (err) {
-                        console.log(`Failed to load ${path}: ${err.message}`);
-                    }
-                }
-                
-                // If we loaded events data
-                if (eventsData && eventsData.length > 0) {
-                    // Display events
-                    eventsList.innerHTML = '';
-                    
-                    eventsData.forEach(event => {
-                        // Fix image path for GitHub Pages - use same path format that worked
-                        let imagePath = event.image;
-                        if (!imagePath.startsWith('http')) {
-                            const pathBase = successPath.substring(0, successPath.lastIndexOf('/'));
-                            const folderPath = pathBase.substring(0, pathBase.lastIndexOf('/'));
-                            imagePath = `${folderPath}/${event.image}`;
-                        }
-                        
-                        const eventHtml = `
-                            <li class="event-item" onclick="openEventModal('${imagePath}')">
-                                <div class="event-date">${event.date}</div>
-                                <a href="#" class="event-title">${event.title}</a>
-                            </li>
-                        `;
-                        eventsList.innerHTML += eventHtml;
-                    });
-                } else {
-                    eventsList.innerHTML = '<li class="error-message">Failed to load events (status: 404)</li>';
-                    console.error('No events found in any of the attempted paths');
-                }
-            } catch (error) {
-                console.error('Error loading events:', error);
-                eventsList.innerHTML = `<li class="error-message">Error loading events: ${error.message}</li>`;
-            }
-        }
+                            <section class="section detailed-section">
+                                <h3 class="section-title">${objectives.title}</h3>
+                                <p class="topic-content">${objectives.content}</p>
+                            </section>
 
-        // Updated loadProjects function with more path options
-        async function loadProjects() {
-            const projectsContainer = document.getElementById('projectsContainer');
-            projectsContainer.innerHTML = '<div class="loading-message">Loading projects...</div>';
-            
-            try {
-                // Calculate base URL for GitHub Pages
-                const baseUrl = window.location.pathname.includes('github.io') ? 
-                    window.location.pathname.split('/').slice(0, -1).join('/') : '';
-                
-                // Project files to try
-                const projectFiles = [
-                    'data-ethics.json',
-                    'project-template.json',
-                    'index.json'
-                ];
-                
-                // Directory paths to try
-                const directoryPaths = [
-                    `${baseUrl}/projects/`,
-                    `${baseUrl}/Projects/`,
-                    `${baseUrl}/`,
-                    `./projects/`,
-                    `./Projects/`,
-                    `./`
-                ];
-                
-                let projectsData = [];
-                let successPathBase = '';
-                
-                // Try each directory + file combination
-                outerLoop: for (const dirPath of directoryPaths) {
-                    for (const filename of projectFiles) {
-                        const fullPath = `${dirPath}${filename}`;
-                        try {
-                            console.log(`Trying to load projects from: ${fullPath}`);
-                            const response = await fetch(fullPath);
-                            
-                            if (response.ok) {
-                                const data = await response.json();
-                                console.log(`Successfully loaded ${fullPath}`);
-                                
-                                // If it's an index file, it might contain a list of files
-                                if (filename === 'index.json' && data.files) {
-                                    successPathBase = dirPath;
-                                    // Load each file in the index
-                                    for (const indexedFile of data.files) {
-                                        try {
-                                            const indexedPath = `${dirPath}${indexedFile}`;
-                                            const fileResponse = await fetch(indexedPath);
-                                            if (fileResponse.ok) {
-                                                const fileData = await fileResponse.json();
-                                                projectsData.push(fileData);
-                                            }
-                                        } catch (err) {
-                                            console.error(`Error loading indexed file ${indexedFile}:`, err);
-                                        }
-                                    }
-                                    if (projectsData.length > 0) {
-                                        break outerLoop;
-                                    }
-                                } else {
-                                    // It's a direct project file
-                                    projectsData.push(data);
-                                    successPathBase = dirPath;
-                                }
-                            }
-                        } catch (err) {
-                            console.log(`Failed to load ${fullPath}: ${err.message}`);
-                        }
-                    }
-                    
-                    // If we found any projects in this directory, stop looking
-                    if (projectsData.length > 0) {
-                        break;
-                    }
-                }
-                
-                // If projects were loaded
-                if (projectsData.length > 0) {
-                    // Sort projects by date (newest first)
-                    projectsData.sort((a, b) => {
-                        try {
-                            const dateA = parseDate(a.date);
-                            const dateB = parseDate(b.date);
-                            return dateB - dateA; // Newest first
-                        } catch (e) {
-                            return 0; // If date parsing fails, don't change order
-                        }
-                    });
-                    
-                    // Clear loading message
-                    projectsContainer.innerHTML = '';
-                    
-                    // Generate HTML for each project
-                    for (const projectData of projectsData) {
-                        // Fix image path for GitHub Pages using the success path format
-                        if (projectData.image && !projectData.image.startsWith('http')) {
-                            const folderPath = successPathBase.substring(0, successPathBase.lastIndexOf('/'));
-                            projectData.image = `${folderPath}/assets/${projectData.image.split('/').pop()}`;
-                        }
-                        
-                        const cardHTML = generateCard(projectData);
-                        const tempDiv = document.createElement('div');
-                        tempDiv.innerHTML = cardHTML;
-                        projectsContainer.appendChild(tempDiv.firstElementChild);
-                    }
-                } else {
-                    projectsContainer.innerHTML = '<div class="error-message">No projects found. Make sure your JSON files exist in the projects directory.</div>';
-                }
-            } catch (error) {
-                console.error('Error loading projects:', error);
-                projectsContainer.innerHTML = `<div class="error-message">Failed to load projects: ${error.message}</div>`;
-            }
-        }
+                            <section class="section detailed-section">
+                                <h3 class="section-title">${methodology.title}</h3>
+                                <p class="topic-content">${methodology.content}</p>
+                            </section>
+
+                            <section class="section detailed-section">
+                                <h3 class="section-title">${lessons.title}</h3>
+                                <ul class="lessons-list topic-content">
+                                    ${lessonsContent}
+                                </ul>
+                            </section>
+
+                            <section class="section detailed-section">
+                                <h3 class="section-title">${collaborators.title}</h3>
+                                <ul class="collaborator-list">
+                                    ${collaboratorsContent}
+                                </ul>
+                            </section>
+                        </div>
+                    </div>
+                </article>
+                <div class="card-links">
+                    <a href="${externalLinks.project}" target="_blank">Project</a>
+                    <a href="${externalLinks.publication}" target="_blank">Publication</a>
+                </div>
+            </div>
+        `;
+    } catch (error) {
+        console.error("Error generating card:", error, cardData);
+        return `
+            <div class="card-section">
+                <article class="research-card">
+                    <div class="card-content">
+                        <div class="card-left">
+                            <h2 class="project-title">Error Displaying Project</h2>
+                            <p class="card-preview">There was an error displaying this project. The JSON format may be incorrect.</p>
+                        </div>
+                    </div>
+                </article>
+            </div>
+        `;
+    }
+}
 
         // Hard-coded fallback data as a last resort
         const FALLBACK_EVENTS = [
