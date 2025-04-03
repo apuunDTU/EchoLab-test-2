@@ -926,7 +926,7 @@
             }
         }
 
-        // Updated loadProjects function with more path options
+        // Updated loadProjects function to fix image paths
         async function loadProjects() {
             const projectsContainer = document.getElementById('projectsContainer');
             projectsContainer.innerHTML = '<div class="loading-message">Loading projects...</div>';
@@ -936,71 +936,33 @@
                 const baseUrl = window.location.pathname.includes('github.io') ? 
                     window.location.pathname.split('/').slice(0, -1).join('/') : '';
                 
-                // Project files to try
-                const projectFiles = [
-                    'data-ethics.json',
-                    'project-template.json',
-                    'index.json'
-                ];
-                
-                // Directory paths to try
-                const directoryPaths = [
-                    `${baseUrl}/projects/`,
-                    `${baseUrl}/Projects/`,
-                    `${baseUrl}/`,
-                    `./projects/`,
-                    `./Projects/`,
-                    `./`
+                // Try multiple path variations (including lowercase/uppercase)
+                const pathsToTry = [
+                    `${baseUrl}/projects/data-ethics.json`,
+                    `${baseUrl}/projects/project-template.json`,
+                    `${baseUrl}/data-ethics.json`,
+                    `${baseUrl}/project-template.json`,
+                    `./projects/data-ethics.json`,
+                    `./projects/project-template.json`,
+                    `./data-ethics.json`,
+                    `./project-template.json`
                 ];
                 
                 let projectsData = [];
-                let successPathBase = '';
                 
-                // Try each directory + file combination
-                outerLoop: for (const dirPath of directoryPaths) {
-                    for (const filename of projectFiles) {
-                        const fullPath = `${dirPath}${filename}`;
-                        try {
-                            console.log(`Trying to load projects from: ${fullPath}`);
-                            const response = await fetch(fullPath);
-                            
-                            if (response.ok) {
-                                const data = await response.json();
-                                console.log(`Successfully loaded ${fullPath}`);
-                                
-                                // If it's an index file, it might contain a list of files
-                                if (filename === 'index.json' && data.files) {
-                                    successPathBase = dirPath;
-                                    // Load each file in the index
-                                    for (const indexedFile of data.files) {
-                                        try {
-                                            const indexedPath = `${dirPath}${indexedFile}`;
-                                            const fileResponse = await fetch(indexedPath);
-                                            if (fileResponse.ok) {
-                                                const fileData = await fileResponse.json();
-                                                projectsData.push(fileData);
-                                            }
-                                        } catch (err) {
-                                            console.error(`Error loading indexed file ${indexedFile}:`, err);
-                                        }
-                                    }
-                                    if (projectsData.length > 0) {
-                                        break outerLoop;
-                                    }
-                                } else {
-                                    // It's a direct project file
-                                    projectsData.push(data);
-                                    successPathBase = dirPath;
-                                }
-                            }
-                        } catch (err) {
-                            console.log(`Failed to load ${fullPath}: ${err.message}`);
+                // Try each path until one works
+                for (const path of pathsToTry) {
+                    try {
+                        console.log(`Trying to load project from: ${path}`);
+                        const response = await fetch(path);
+                        
+                        if (response.ok) {
+                            const projectData = await response.json();
+                            projectsData.push(projectData);
+                            console.log(`Successfully loaded ${path}`);
                         }
-                    }
-                    
-                    // If we found any projects in this directory, stop looking
-                    if (projectsData.length > 0) {
-                        break;
+                    } catch (err) {
+                        console.log(`Failed to load ${path}: ${err.message}`);
                     }
                 }
                 
@@ -1022,10 +984,17 @@
                     
                     // Generate HTML for each project
                     for (const projectData of projectsData) {
-                        // Fix image path for GitHub Pages using the success path format
+                        // Fix image path - very important fix
                         if (projectData.image && !projectData.image.startsWith('http')) {
-                            const folderPath = successPathBase.substring(0, successPathBase.lastIndexOf('/'));
-                            projectData.image = `${folderPath}/assets/${projectData.image.split('/').pop()}`;
+                            // Check if the image path is already relative to assets
+                            if (projectData.image.includes('assets/')) {
+                                // Just prepend the base URL
+                                projectData.image = `${baseUrl}/${projectData.image}`;
+                            } else {
+                                // Otherwise, assume it should be in the assets folder
+                                projectData.image = `${baseUrl}/assets/${projectData.image}`;
+                            }
+                            console.log(`Adjusted image path to: ${projectData.image}`);
                         }
                         
                         const cardHTML = generateCard(projectData);
@@ -1040,7 +1009,30 @@
                 console.error('Error loading projects:', error);
                 projectsContainer.innerHTML = `<div class="error-message">Failed to load projects: ${error.message}</div>`;
             }
-        }
+                            // Clear loading message
+                            projectsContainer.innerHTML = '';
+                            
+                            // Generate HTML for each project
+                            for (const projectData of projectsData) {
+                                // Fix image path for GitHub Pages using the success path format
+                                if (projectData.image && !projectData.image.startsWith('http')) {
+                                    const folderPath = successPathBase.substring(0, successPathBase.lastIndexOf('/'));
+                                    projectData.image = `${folderPath}/assets/${projectData.image.split('/').pop()}`;
+                                }
+                                
+                                const cardHTML = generateCard(projectData);
+                                const tempDiv = document.createElement('div');
+                                tempDiv.innerHTML = cardHTML;
+                                projectsContainer.appendChild(tempDiv.firstElementChild);
+                            }
+                        } else {
+                            projectsContainer.innerHTML = '<div class="error-message">No projects found. Make sure your JSON files exist in the projects directory.</div>';
+                        }
+                    } catch (error) {
+                        console.error('Error loading projects:', error);
+                        projectsContainer.innerHTML = `<div class="error-message">Failed to load projects: ${error.message}</div>`;
+                    }
+                }
 
         // Hard-coded fallback data as a last resort
         const FALLBACK_EVENTS = [
