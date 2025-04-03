@@ -844,88 +844,6 @@
             }
         }
 
-        // Updated loadEvents function with more path options
-        async function loadEvents() {
-            const eventsList = document.getElementById('eventsList');
-            
-            try {
-                // Calculate base URL for GitHub Pages with multiple options
-                const baseUrl = window.location.pathname.includes('github.io') ? 
-                    window.location.pathname.split('/').slice(0, -1).join('/') : '';
-                
-                // Try multiple path variations (including lowercase/uppercase)
-                const pathsToTry = [
-                    `${baseUrl}/Events/events.json`,
-                    `${baseUrl}/events/events.json`,
-                    `${baseUrl}/Events/event.json`,
-                    `${baseUrl}/events/event.json`,
-                    `${baseUrl}/events.json`,
-                    `./Events/events.json`,
-                    `./events/events.json`
-                ];
-                
-                let eventsData = null;
-                let successPath = '';
-                
-                // Try each path until one works
-                for (const path of pathsToTry) {
-                    try {
-                        console.log(`Trying to load events from: ${path}`);
-                        const response = await fetch(path);
-                        
-                        if (response.ok) {
-                            const data = await response.json();
-                            console.log(`Successfully loaded events from: ${path}`);
-                            
-                            // Extract events data
-                            if (data.events && Array.isArray(data.events)) {
-                                eventsData = data.events;
-                            } else if (Array.isArray(data)) {
-                                eventsData = data;
-                            }
-                            
-                            if (eventsData && eventsData.length > 0) {
-                                successPath = path;
-                                break;
-                            }
-                        }
-                    } catch (err) {
-                        console.log(`Failed to load ${path}: ${err.message}`);
-                    }
-                }
-                
-                // If we loaded events data
-                if (eventsData && eventsData.length > 0) {
-                    // Display events
-                    eventsList.innerHTML = '';
-                    
-                    eventsData.forEach(event => {
-                        // Fix image path for GitHub Pages - use same path format that worked
-                        let imagePath = event.image;
-                        if (!imagePath.startsWith('http')) {
-                            const pathBase = successPath.substring(0, successPath.lastIndexOf('/'));
-                            const folderPath = pathBase.substring(0, pathBase.lastIndexOf('/'));
-                            imagePath = `${folderPath}/${event.image}`;
-                        }
-                        
-                        const eventHtml = `
-                            <li class="event-item" onclick="openEventModal('${imagePath}')">
-                                <div class="event-date">${event.date}</div>
-                                <a href="#" class="event-title">${event.title}</a>
-                            </li>
-                        `;
-                        eventsList.innerHTML += eventHtml;
-                    });
-                } else {
-                    eventsList.innerHTML = '<li class="error-message">Failed to load events (status: 404)</li>';
-                    console.error('No events found in any of the attempted paths');
-                }
-            } catch (error) {
-                console.error('Error loading events:', error);
-                eventsList.innerHTML = `<li class="error-message">Error loading events: ${error.message}</li>`;
-            }
-        }
-
         // Updated loadProjects function to fix image paths
         async function loadProjects() {
             const projectsContainer = document.getElementById('projectsContainer');
@@ -1009,31 +927,7 @@
                 console.error('Error loading projects:', error);
                 projectsContainer.innerHTML = `<div class="error-message">Failed to load projects: ${error.message}</div>`;
             }
-                            // Clear loading message
-                            projectsContainer.innerHTML = '';
-                            
-                            // Generate HTML for each project
-                            for (const projectData of projectsData) {
-                                // Fix image path for GitHub Pages using the success path format
-                                if (projectData.image && !projectData.image.startsWith('http')) {
-                                    const folderPath = successPathBase.substring(0, successPathBase.lastIndexOf('/'));
-                                    projectData.image = `${folderPath}/assets/${projectData.image.split('/').pop()}`;
-                                }
-                                
-                                const cardHTML = generateCard(projectData);
-                                const tempDiv = document.createElement('div');
-                                tempDiv.innerHTML = cardHTML;
-                                projectsContainer.appendChild(tempDiv.firstElementChild);
-                            }
-                        } else {
-                            projectsContainer.innerHTML = '<div class="error-message">No projects found. Make sure your JSON files exist in the projects directory.</div>';
-                        }
-                    } catch (error) {
-                        console.error('Error loading projects:', error);
-                        projectsContainer.innerHTML = `<div class="error-message">Failed to load projects: ${error.message}</div>`;
-                    }
-                }
-
+        }
         // Hard-coded fallback data as a last resort
         const FALLBACK_EVENTS = [
             {
