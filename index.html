@@ -659,7 +659,7 @@
                 let filesLoaded = false;
                 
                 try {
-                    const response = await fetch('/Events/index.json');
+                    const response = await fetch('./Events/index.json');
                     
                     if (response.ok) {
                         const indexData = await response.json();
@@ -683,55 +683,27 @@
                     console.log('No index.json found in Events directory, trying individual files');
                 }
                 
-                // If no files loaded from index, try direct file approach
+                // If no files loaded from index, try loading events.json file
                 if (!filesLoaded) {
-                    // Try loading a single event.json file
                     try {
-                        const response = await fetch('/Events/event.json');
+                        const response = await fetch('./Events/events.json');
                         
                         if (response.ok) {
                             const data = await response.json();
                             
-                            // Check if it's an array of events or a single event
-                            if (Array.isArray(data)) {
+                            // Handle the specific structure from your events.json
+                            if (data.events && Array.isArray(data.events)) {
+                                eventsData = data.events;
+                                filesLoaded = true;
+                            } else if (Array.isArray(data)) {
                                 eventsData = data;
+                                filesLoaded = true;
                             } else {
-                                eventsData.push(data);
+                                console.error('Unexpected format in events.json');
                             }
-                            filesLoaded = true;
                         }
                     } catch (err) {
-                        console.error('Error loading event.json:', err);
-                    }
-                    
-                    // If still no files loaded, try individual event-1.json, event-2.json, etc.
-                    if (!filesLoaded) {
-                        const eventFiles = [
-                            'event-1.json',
-                            'event-2.json',
-                            'event-3.json',
-                            'events.json'
-                        ];
-                        
-                        for (const filename of eventFiles) {
-                            try {
-                                const response = await fetch(`/Events/${filename}`);
-                                
-                                if (response.ok) {
-                                    const data = await response.json();
-                                    
-                                    // Check if it's an array of events or a single event
-                                    if (Array.isArray(data)) {
-                                        eventsData = eventsData.concat(data);
-                                    } else {
-                                        eventsData.push(data);
-                                    }
-                                    filesLoaded = true;
-                                }
-                            } catch (err) {
-                                console.log(`Could not load ${filename}`);
-                            }
-                        }
+                        console.error('Error loading events.json:', err);
                     }
                 }
                 
@@ -758,13 +730,10 @@
                     
                     if (upcomingEvents.length > 0) {
                         upcomingEvents.forEach(event => {
-                            // Format date as DD.MM from original date format
-                            const dateParts = event.date.split('.');
-                            const formattedDate = `${dateParts[0]}.${dateParts[1]}`;
-                            
+                            // The date is already in the correct format (DD.MM)
                             const eventHtml = `
                                 <li class="event-item" onclick="openEventModal('${event.image}')">
-                                    <div class="event-date">${formattedDate}</div>
+                                    <div class="event-date">${event.date}</div>
                                     <a href="#" class="event-title">${event.title}</a>
                                 </li>
                             `;
@@ -789,7 +758,7 @@
             
             try {
                 // First, fetch the list of files in the /projects directory
-                const response = await fetch('/projects/index.json');
+                const response = await fetch('./projects/index.json');
                 
                 if (!response.ok) {
                     throw new Error('Failed to load project index. Status: ' + response.status);
@@ -802,7 +771,7 @@
                 // Load each project file from the /projects directory
                 for (const filename of fileList.files) {
                     try {
-                        const projectResponse = await fetch(`/projects/${filename}`);
+                                                        const projectResponse = await fetch(`./projects/${filename}`);
                         
                         if (!projectResponse.ok) {
                             console.error(`Failed to load project: ${filename}`);
@@ -834,7 +803,7 @@
                         
                         for (const filename of projectFiles) {
                             try {
-                                const projectResponse = await fetch(`/projects/${filename}`);
+                                const projectResponse = await fetch(`./projects/${filename}`);
                                 
                                 if (!projectResponse.ok) {
                                     console.error(`Failed to load project: ${filename}`);
@@ -881,7 +850,7 @@
                 // Fallback: try to directly scan the directory (this might not work on all servers)
                 // This is a last-resort approach that works on some server configurations
                 try {
-                    const fallbackResponse = await fetch('/projects/');
+                    const fallbackResponse = await fetch('./projects/');
                     if (fallbackResponse.ok) {
                         const html = await fallbackResponse.text();
                         const parser = new DOMParser();
@@ -896,7 +865,7 @@
                             
                             for (const filename of links) {
                                 try {
-                                    const projectResponse = await fetch(`/projects/${filename}`);
+                                    const projectResponse = await fetch(`./projects/${filename}`);
                                     if (projectResponse.ok) {
                                         const projectData = await projectResponse.json();
                                         altProjectsData.push(projectData);
