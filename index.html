@@ -569,7 +569,7 @@
     <div class="upcoming-events">
         <h2>Upcoming next:</h2>
         <ul class="event-list" id="eventsList">
-            <!-- Events will be loaded dynamically from /Events directory -->
+            <!-- Events will be loaded dynamically -->
             <li class="loading-message">Loading events...</li>
         </ul>
     </div>
@@ -648,258 +648,6 @@
             // Create date in format YYYY-MM-DD for proper comparison
             return new Date(parts[2], parts[1] - 1, parts[0]); 
         }
-        
-        // Function to load events from /Events directory
-        async function loadEvents() {
-            const eventsList = document.getElementById('eventsList');
-            
-            try {
-                // First try to load from an index file
-                let eventsData = [];
-                let filesLoaded = false;
-                
-                try {
-                    const response = await fetch('./Events/index.json');
-                    
-                    if (response.ok) {
-                        const indexData = await response.json();
-                        
-                        // Process each event file listed in the index
-                        for (const filename of indexData.files) {
-                            try {
-                                const eventResponse = await fetch(`/Events/${filename}`);
-                                
-                                if (eventResponse.ok) {
-                                    const eventData = await eventResponse.json();
-                                    eventsData.push(eventData);
-                                    filesLoaded = true;
-                                }
-                            } catch (err) {
-                                console.error(`Error loading event file ${filename}:`, err);
-                            }
-                        }
-                    }
-                } catch (indexError) {
-                    console.log('No index.json found in Events directory, trying individual files');
-                }
-                
-                // If no files loaded from index, try loading events.json file
-                if (!filesLoaded) {
-                    try {
-                        const response = await fetch('./Events/events.json');
-                        
-                        if (response.ok) {
-                            const data = await response.json();
-                            
-                            // Handle the specific structure from your events.json
-                            if (data.events && Array.isArray(data.events)) {
-                                eventsData = data.events;
-                                filesLoaded = true;
-                            } else if (Array.isArray(data)) {
-                                eventsData = data;
-                                filesLoaded = true;
-                            } else {
-                                console.error('Unexpected format in events.json');
-                            }
-                        }
-                    } catch (err) {
-                        console.error('Error loading events.json:', err);
-                    }
-                }
-                
-                // If we loaded any events
-                if (eventsData.length > 0) {
-                    // Sort by date (closest upcoming first)
-                    eventsData.sort((a, b) => {
-                        const dateA = parseDate(a.date);
-                        const dateB = parseDate(b.date);
-                        return dateA - dateB; // Ascending order (soonest first)
-                    });
-                    
-                    // Filter out past events (optional)
-                    const today = new Date();
-                    today.setHours(0, 0, 0, 0); // Set to beginning of today
-                    
-                    const upcomingEvents = eventsData.filter(event => {
-                        const eventDate = parseDate(event.date);
-                        return eventDate >= today;
-                    });
-                    
-                    // Display events
-                    eventsList.innerHTML = '';
-                    
-                    if (upcomingEvents.length > 0) {
-                        upcomingEvents.forEach(event => {
-                            // The date is already in the correct format (DD.MM)
-                            const eventHtml = `
-                                <li class="event-item" onclick="openEventModal('${event.image}')">
-                                    <div class="event-date">${event.date}</div>
-                                    <a href="#" class="event-title">${event.title}</a>
-                                </li>
-                            `;
-                            eventsList.innerHTML += eventHtml;
-                        });
-                    } else {
-                        eventsList.innerHTML = '<li>No upcoming events</li>';
-                    }
-                } else {
-                    eventsList.innerHTML = '<li>No events found</li>';
-                }
-            } catch (error) {
-                console.error('Error loading events:', error);
-                eventsList.innerHTML = '<li class="error-message">Failed to load events</li>';
-            }
-        }
-
-        // Function to fetch and load all JSON files from /projects directory
-        async function loadProjects() {
-            const projectsContainer = document.getElementById('projectsContainer');
-            projectsContainer.innerHTML = '<div class="loading-message">Loading projects...</div>';
-            
-            try {
-                // First, fetch the list of files in the /projects directory
-                const response = await fetch('./projects/index.json');
-                
-                if (!response.ok) {
-                    throw new Error('Failed to load project index. Status: ' + response.status);
-                }
-                
-                // Parse the index file which contains the list of project files
-                const fileList = await response.json();
-                let projectsData = [];
-                
-                // Load each project file from the /projects directory
-                for (const filename of fileList.files) {
-                    try {
-                                                        const projectResponse = await fetch(`./projects/${filename}`);
-                        
-                        if (!projectResponse.ok) {
-                            console.error(`Failed to load project: ${filename}`);
-                            continue;
-                        }
-                        
-                        const projectData = await projectResponse.json();
-                        projectsData.push(projectData);
-                    } catch (err) {
-                        console.error(`Error processing project ${filename}:`, err);
-                    }
-                }
-                
-                // Alternative approach if index.json doesn't exist:
-                // This loads all .json files from /projects directory
-                if (projectsData.length === 0) {
-                    try {
-                        // Manually list the JSON files in the projects directory
-                        // This is a fallback approach if the index.json approach doesn't work
-                        const projectFiles = [
-                            'ai-as-citizens.json',
-                            'data-destruction-json.json',
-                            'data-ethics.json',
-                            'digital-democracy-initiative.json',
-                            'ethical-ai-framework.json',
-                            'project-template.json'
-                            // Add or remove files as needed
-                        ];
-                        
-                        for (const filename of projectFiles) {
-                            try {
-                                const projectResponse = await fetch(`./projects/${filename}`);
-                                
-                                if (!projectResponse.ok) {
-                                    console.error(`Failed to load project: ${filename}`);
-                                    continue;
-                                }
-                                
-                                const projectData = await projectResponse.json();
-                                projectsData.push(projectData);
-                            } catch (err) {
-                                console.error(`Error processing project ${filename}:`, err);
-                            }
-                        }
-                    } catch (error) {
-                        console.error('Error with fallback loading approach:', error);
-                    }
-                }
-                
-                // Sort projects by date (newest first)
-                projectsData.sort((a, b) => {
-                    const dateA = parseDate(a.date);
-                    const dateB = parseDate(b.date);
-                    return dateB - dateA; // Newest first
-                });
-                
-                // Clear loading message
-                projectsContainer.innerHTML = '';
-                
-                // Generate HTML for each project
-                for (const projectData of projectsData) {
-                    const cardHTML = generateCard(projectData);
-                    const tempDiv = document.createElement('div');
-                    tempDiv.innerHTML = cardHTML;
-                    projectsContainer.appendChild(tempDiv.firstElementChild);
-                }
-                
-                // If no projects were loaded successfully
-                if (projectsContainer.children.length === 0) {
-                    projectsContainer.innerHTML = '<div class="error-message">No projects found. Please check your JSON files in the /projects directory.</div>';
-                }
-            } catch (error) {
-                console.error('Error loading projects:', error);
-                projectsContainer.innerHTML = '<div class="error-message">Failed to load projects. Please check the console for details.</div>';
-                
-                // Fallback: try to directly scan the directory (this might not work on all servers)
-                // This is a last-resort approach that works on some server configurations
-                try {
-                    const fallbackResponse = await fetch('./projects/');
-                    if (fallbackResponse.ok) {
-                        const html = await fallbackResponse.text();
-                        const parser = new DOMParser();
-                        const doc = parser.parseFromString(html, 'text/html');
-                        const links = Array.from(doc.querySelectorAll('a'))
-                            .filter(link => link.href.endsWith('.json'))
-                            .map(link => link.href.split('/').pop());
-                        
-                        if (links.length > 0) {
-                            projectsContainer.innerHTML = '<div class="loading-message">Trying alternative loading method...</div>';
-                            let altProjectsData = [];
-                            
-                            for (const filename of links) {
-                                try {
-                                    const projectResponse = await fetch(`./projects/${filename}`);
-                                    if (projectResponse.ok) {
-                                        const projectData = await projectResponse.json();
-                                        altProjectsData.push(projectData);
-                                    }
-                                } catch (err) {
-                                    console.error(`Error in fallback processing for ${filename}:`, err);
-                                }
-                            }
-                            
-                            if (altProjectsData.length > 0) {
-                                // Sort and display the projects
-                                altProjectsData.sort((a, b) => {
-                                    const dateA = parseDate(a.date);
-                                    const dateB = parseDate(b.date);
-                                    return dateB - dateA;
-                                });
-                                
-                                projectsContainer.innerHTML = '';
-                                for (const projectData of altProjectsData) {
-                                    const cardHTML = generateCard(projectData);
-                                    const tempDiv = document.createElement('div');
-                                    tempDiv.innerHTML = cardHTML;
-                                    projectsContainer.appendChild(tempDiv.firstElementChild);
-                                }
-                            } else {
-                                projectsContainer.innerHTML = '<div class="error-message">All fallback methods failed. Please ensure your JSON files exist in the /projects directory.</div>';
-                            }
-                        }
-                    }
-                } catch (fallbackError) {
-                    console.error('Fallback method also failed:', fallbackError);
-                }
-            }
-        }
 
         // Generate HTML for a single card
         function generateCard(cardData) {
@@ -956,15 +704,152 @@
                 </div>
             `;
         }
-
-        // Add console logging to help with debugging
-        console.log('Document loaded, starting to load projects and events');
         
-        // Load projects and events when the page loads
+        // Function to load events from Events/events.json with GitHub Pages path resolution
+        async function loadEvents() {
+            const eventsList = document.getElementById('eventsList');
+            
+            try {
+                // Calculate base URL for GitHub Pages
+                const baseUrl = window.location.pathname.includes('github.io') ? 
+                    window.location.pathname.split('/').slice(0, -1).join('/') : '';
+                
+                // Construct the full path to events.json
+                const eventsPath = `${baseUrl}/Events/events.json`;
+                console.log(`Attempting to load events from: ${eventsPath}`);
+                
+                const eventsResponse = await fetch(eventsPath);
+                
+                if (eventsResponse.ok) {
+                    const data = await eventsResponse.json();
+                    console.log('Successfully loaded events.json:', data);
+                    
+                    // Handle the specific structure from your events.json
+                    let eventsData = [];
+                    if (data.events && Array.isArray(data.events)) {
+                        eventsData = data.events;
+                        console.log('Found events array in data.events property');
+                    } else if (Array.isArray(data)) {
+                        eventsData = data;
+                        console.log('Data is directly an array of events');
+                    } else {
+                        console.error('Unexpected format in events.json');
+                    }
+                    
+                    // If we loaded any events
+                    if (eventsData.length > 0) {
+                        // Display events
+                        eventsList.innerHTML = '';
+                        
+                        eventsData.forEach(event => {
+                            // Fix image path for GitHub Pages
+                            const imagePath = event.image.startsWith('http') ? 
+                                event.image : `${baseUrl}/${event.image}`;
+                                
+                            const eventHtml = `
+                                <li class="event-item" onclick="openEventModal('${imagePath}')">
+                                    <div class="event-date">${event.date}</div>
+                                    <a href="#" class="event-title">${event.title}</a>
+                                </li>
+                            `;
+                            eventsList.innerHTML += eventHtml;
+                        });
+                    } else {
+                        eventsList.innerHTML = '<li>No events found in the data</li>';
+                    }
+                } else {
+                    console.error(`Failed to load ${eventsPath}, status:`, eventsResponse.status);
+                    eventsList.innerHTML = `<li class="error-message">Failed to load events (status: ${eventsResponse.status})</li>`;
+                }
+            } catch (error) {
+                console.error('Error loading events:', error);
+                eventsList.innerHTML = `<li class="error-message">Error loading events: ${error.message}</li>`;
+            }
+        }
+        
+        // Function to load projects from projects directory with GitHub Pages path resolution
+        async function loadProjects() {
+            const projectsContainer = document.getElementById('projectsContainer');
+            projectsContainer.innerHTML = '<div class="loading-message">Loading projects...</div>';
+            
+            try {
+                // Calculate base URL for GitHub Pages
+                const baseUrl = window.location.pathname.includes('github.io') ? 
+                    window.location.pathname.split('/').slice(0, -1).join('/') : '';
+                
+                // Project files to load
+                const projectFiles = [
+                    'data-ethics.json',
+                    'project-template.json'
+                ];
+                
+                let projectsData = [];
+                
+                // Attempt to load each project file from the projects folder
+                for (const filename of projectFiles) {
+                    try {
+                        const url = `${baseUrl}/projects/${filename}`;
+                        console.log(`Attempting to load project from: ${url}`);
+                        
+                        const projectResponse = await fetch(url);
+                        
+                        if (projectResponse.ok) {
+                            const projectData = await projectResponse.json();
+                            projectsData.push(projectData);
+                            console.log(`Successfully loaded ${filename}`);
+                        } else {
+                            console.log(`Failed to load ${url}, status: ${projectResponse.status}`);
+                        }
+                    } catch (err) {
+                        console.error(`Error processing project ${filename}:`, err);
+                    }
+                }
+                
+                // Check if we loaded any projects
+                if (projectsData.length > 0) {
+                    // Sort projects by date (newest first)
+                    projectsData.sort((a, b) => {
+                        const dateA = parseDate(a.date);
+                        const dateB = parseDate(b.date);
+                        return dateB - dateA; // Newest first
+                    });
+                    
+                    // Clear loading message
+                    projectsContainer.innerHTML = '';
+                    
+                    // Generate HTML for each project
+                    for (const projectData of projectsData) {
+                        // Fix image path for GitHub Pages
+                        if (!projectData.image.startsWith('http')) {
+                            projectData.image = `${baseUrl}/${projectData.image}`;
+                        }
+                        
+                        const cardHTML = generateCard(projectData);
+                        const tempDiv = document.createElement('div');
+                        tempDiv.innerHTML = cardHTML;
+                        projectsContainer.appendChild(tempDiv.firstElementChild);
+                    }
+                } else {
+                    projectsContainer.innerHTML = '<div class="error-message">No projects found. Make sure your JSON files exist in the projects directory.</div>';
+                }
+            } catch (error) {
+                console.error('Error loading projects:', error);
+                projectsContainer.innerHTML = `<div class="error-message">Failed to load projects: ${error.message}</div>`;
+            }
+        }
+        
+        // Load everything on page load
         document.addEventListener('DOMContentLoaded', function() {
-            console.log('DOM fully loaded');
-            loadProjects();
+            console.log('DOM loaded, starting to load content');
+            console.log('Current pathname:', window.location.pathname);
+            
+            // Calculate and log base URL for debugging
+            const baseUrl = window.location.pathname.includes('github.io') ? 
+                window.location.pathname.split('/').slice(0, -1).join('/') : '';
+            console.log('Calculated base URL:', baseUrl);
+            
             loadEvents();
+            loadProjects();
         });
     </script>
 </body>
