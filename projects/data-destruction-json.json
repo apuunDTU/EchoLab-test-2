@@ -1,0 +1,46 @@
+{
+    "id": "data-destruction",
+    "date": "10.05.2024",
+    "title": "DATA DESTRUCTION WORKSHOP COMING SOON",
+    "image": "assets/Test.png",
+    "preview": "A workshop exploring the ethical and practical implications of data destruction in the digital age. Participants will learn about different methods of secure data deletion and discuss the importance of data privacy in research contexts.",
+    "sections": {
+        "researchTopics": {
+            "title": "KEY FINDINGS:",
+            "content": [
+                "Data privacy",
+                "Digital ethics",
+                "Research methodology",
+                "Information security"
+            ]
+        },
+        "objectives": {
+            "title": "OBJECTIVES:",
+            "content": "To develop best practices for data destruction in research contexts and raise awareness about the importance of data privacy."
+        },
+        "methodology": {
+            "title": "METHODOLOGY:",
+            "content": "Workshop sessions, practical demonstrations, and group discussions"
+        },
+        "lessons": {
+            "title": "INSIGHTS GAINED:",
+            "content": [
+                "Data destruction is a critical component of research ethics",
+                "Different types of data require different destruction methods",
+                "Institutional policies often lag behind technological capabilities"
+            ]
+        },
+        "collaborators": {
+            "title": "RESEARCH TEAM:",
+            "content": [
+                "ECHO Lab",
+                "DTU Data Ethics Group",
+                "Privacy International"
+            ]
+        }
+    },
+    "externalLinks": {
+        "project": "https://www.linkedin.com/feed/",
+        "publication": "https://www.linkedin.com/feed/"
+    }
+}
