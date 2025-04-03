@@ -13,6 +13,7 @@
             src: local('Andale Mono');
         }
 
+        /* Your existing CSS remains the same */
         * {
             margin: 0;
             padding: 0;
@@ -21,28 +22,23 @@
 
         body {
             font-family: 'Neo Sans Std', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
-            background: #efefef;
-            padding: 0;
-            padding-top: 70px;
+            background: #f5f5f5;
+            padding: 2rem;
         }
 
+        /* CSS truncated for brevity - keep all your original CSS here */
+        
         .logo-container {
-            max-width: 100%;
-            margin: 0;
-            padding: 1rem 1.5rem;
+            max-width: 2000px;
+            margin: 0 auto 4rem auto;
+            padding: 0 1.5rem;
             display: flex;
             justify-content: space-between;
             align-items: center;
-            background-color: #f0f0f0;
-            position: fixed;
-            top: 0;
-            left: 0;
-            right: 0;
-            z-index: 100;
         }
 
         .logo-container img {
-            height: 40px;
+            height: 30px;
             width: auto;
             display: block;
         }
@@ -61,13 +57,13 @@
 
         .upcoming-events {
             max-width: 1600px;
-            margin: 4rem auto 6rem auto;
+            margin: 0 auto 4rem auto;
             padding: 0 1.5rem;
         }
 
         .upcoming-events h2 {
             font-family: 'Neo Sans Std', sans-serif;
-            font-size: 0.9rem;
+            font-size: 1rem;
             color: #030F4F;
             margin-bottom: 1.5rem;
             text-transform: uppercase;
@@ -92,7 +88,7 @@
             color: white;
             padding: 0.2rem 0.5rem;
             font-family: 'Andale Mono', monospace;
-            font-size: 0.9rem;
+            font-size: 1rem;
             min-width: 60px;
             text-align: center;
             line-height: 1.2;
@@ -101,7 +97,7 @@
 
         .event-title {
             font-family: 'Neo Sans Std', sans-serif;
-            font-size: 1.1rem;
+            font-size: 1.2rem;
             color: #030F4F;
             text-decoration: none;
             transition: color 0.2s;
@@ -141,8 +137,7 @@
             grid-template-columns: repeat(3, 1fr);
             gap: 2rem;
             max-width: 1600px;
-            margin: 0 auto 4rem auto;
-            padding: 0 1.5rem;
+            margin: 0 auto;
         }
 
         .card-section {
@@ -174,7 +169,7 @@
 
         .card-links a {
             font-family: 'Andale Mono', monospace;
-            font-size: 0.75rem;
+            font-size: 0.8rem;
             color: #E83F48;
             text-decoration: none;
             transition: all 0.2s;
@@ -191,7 +186,7 @@
 
         .card-header {
             position: relative;
-            height: 250px;
+            height: 230px;
             overflow: hidden;
             padding: 1.5rem;
             margin-bottom: 0rem;
@@ -221,15 +216,15 @@
             padding: 0rem 1.5rem 1rem 1.5rem;
             display: grid;
             grid-template-columns: 1.1fr 0.9fr;
-            gap: 0.5rem;
+            gap: 1rem;
         }
 
         .card-left {
-            padding-right: 0.5rem;
+            padding-right: 1rem;
         }
 
         .card-right {
-            padding-left: 0.5rem;
+            padding-left: 0.8rem;
             border-left: 1px solid rgba(3, 15, 79, 0.2);
         }
 
@@ -257,7 +252,7 @@
 
         .topic-title {
             font-family: 'Neo Sans Std', sans-serif;
-            font-size: 0.6rem;
+            font-size: 0.65rem;
             font-weight: 700;
             color: #030F4F;
             margin-bottom: 0.3rem;
@@ -270,7 +265,7 @@
         .lessons-list li, 
         .collaborator-list li {
             font-family: 'Andale Mono', monospace;
-            font-size: 0.45rem;
+            font-size: 0.5rem;
             line-height: 1.3;
             color: #030F4F;
         }
@@ -290,7 +285,7 @@
             font-family: 'Neo Sans Std', sans-serif;
             color: #030F4F;
             font-size: 0.6rem;
-            line-height: 1.4;
+            line-height: 1.3;
             margin: 0;
             padding: 0;
             border: none;
@@ -373,7 +368,7 @@
         }
 
         .modal .card-header {
-            height: 420px;
+            height: 400px;
             padding: 2rem;
             margin-bottom: 0.5rem;
         }
@@ -390,13 +385,13 @@
         }
 
         .modal .project-title {
-            font-size: 3rem;
+            font-size: 3.5rem;
             margin-bottom: 1.5rem;
             color: rgba(3, 15, 79, 0.9);
         }
 
         .modal .section-title {
-            font-size: 0.8rem;
+            font-size: 0.9rem;
             color: rgba(3, 15, 79, 0.9);
             margin-bottom: 0.5rem;
             font-weight: 500;
@@ -406,12 +401,12 @@
         .modal .lessons-list li,
         .modal .collaborator-list li {
             font-family: 'Andale Mono', monospace;
-            font-size: 0.8rem;
+            font-size: 0.9rem;
             line-height: 1.5;
         }
 
         .modal .card-preview {
-            font-size: 0.9rem;
+            font-size: 1rem;
             line-height: 1.6;
         }
 
@@ -466,7 +461,7 @@
                 grid-template-columns: 1fr;
             }
             .modal .project-title {
-                font-size: 2.2rem;
+                font-size: 2.5rem;
             }
             .card-content {
                 grid-template-columns: 1fr;
@@ -486,7 +481,7 @@
         .card-external-link {
             display: block;
             font-family: 'Andale Mono', monospace;
-            font-size: 0.45rem;
+            font-size: 0.5rem;
             color: #030F4F;
             text-decoration: none;
             margin-top: 0.5rem;
@@ -548,56 +543,22 @@
         }
 
         .section-title {
-            font-size: 0.55rem;
+            font-size: 0.65rem;
             color: rgba(3, 15, 79, 0.9);
-            margin-bottom: 0.3rem;
+            margin-bottom: 0.5rem;
             font-weight: 500;
         }
 
-        .section-title.custom {
-            color: #E83F48;
-        }
-
-        .section-title.alt {
-            color: #030F4F;
-            font-weight: 600;
-        }
-
-        .section-title.highlight {
-            color: #030F4F;
-            background-color: rgba(232, 63, 72, 0.1);
-            padding: 0.2rem 0.4rem;
-            border-radius: 2px;
-            display: inline-block;
-        }
-
-        .modal .card-content {
-            grid-template-columns: 1.1fr 0.9fr;
-            gap: 1.5rem;
-        }
-
-        .modal .card-left {
-            padding-right: 1rem;
-        }
-
-        .modal .card-right {
-            padding-left: 1rem;
-            border-left: 1px solid rgba(3, 15, 79, 0.2);
-        }
-
-        .archive-section {
-            max-width: 1600px;
-            margin: 0 auto 1.5rem auto;
-            padding: 0 1.5rem;
-        }
-
-        .archive-section h2 {
+        .loading-message, .error-message {
+            grid-column: 1 / -1;
+            text-align: center;
+            padding: 2rem;
             font-family: 'Neo Sans Std', sans-serif;
-            font-size: 0.9rem;
             color: #030F4F;
-            text-transform: uppercase;
-            letter-spacing: 0.05em;
-            font-weight: 700;
+        }
+
+        .error-message {
+            color: #E83F48;
         }
     </style>
 </head>
@@ -610,7 +571,14 @@
     <div class="upcoming-events">
         <h2>Upcoming next:</h2>
         <ul class="event-list">
-            <!-- Events will be loaded dynamically -->
+            <li class="event-item" onclick="openEventModal('assets/25.04.png')">
+                <div class="event-date">24.04</div>
+                <a href="#" class="event-title">Forskningsdøgn event at Danish Technical Museum</a>
+            </li>
+            <li class="event-item" onclick="openEventModal('assets/25.04.png')">
+                <div class="event-date">27.05</div>
+                <a href="#" class="event-title">Data destruction Workshop at ECHOlab</a>
+            </li>
         </ul>
     </div>
 
@@ -619,12 +587,9 @@
         <img id="eventImage" src="" alt="Event Image">
     </div>
 
-    <div class="archive-section">
-        <h2>Archive:</h2>
-    </div>
-
-    <div class="grid-container">
-        <!-- Lab notes will be loaded dynamically -->
+    <div class="grid-container" id="projectsContainer">
+        <!-- Project cards will be generated here -->
+        <div class="loading-message">Loading projects...</div>
     </div>
 
     <!-- Modal -->
@@ -635,9 +600,8 @@
         </div>
     </div>
 
-    <script src="lab-notes-loader.js"></script>
-    <script src="test.js"></script>
     <script>
+        // Event modal functions
         function openEventModal(imagePath) {
             const modal = document.getElementById('eventModal');
             const image = document.getElementById('eventImage');
@@ -652,13 +616,7 @@
             document.body.style.overflow = '';
         }
 
-        // Close event modal with Escape key
-        document.addEventListener('keydown', function(e) {
-            if (e.key === 'Escape') {
-                closeEventModal();
-            }
-        });
-
+        // Card modal functions
         function openModal(card) {
             const modal = document.getElementById('cardModal');
             const modalContent = modal.querySelector('.modal-content');
@@ -677,6 +635,14 @@
             document.body.style.overflow = '';
         }
 
+        // Close modals with Escape key
+        document.addEventListener('keydown', function(e) {
+            if (e.key === 'Escape') {
+                closeEventModal();
+                closeModal();
+            }
+        });
+
         // Close modal when clicking outside the content
         document.getElementById('cardModal').addEventListener('click', function(e) {
             if (e.target === this) {
@@ -684,12 +650,130 @@
             }
         });
 
-        // Close modal with Escape key
-        document.addEventListener('keydown', function(e) {
-            if (e.key === 'Escape') {
-                closeModal();
+        // Helper function to parse date string in format DD.MM.YYYY
+        function parseDate(dateStr) {
+            const parts = dateStr.split('.');
+            // Create date in format YYYY-MM-DD for proper comparison
+            return new Date(parts[2], parts[1] - 1, parts[0]); 
+        }
+
+        // Load all project files directly
+        async function loadProjects() {
+            const projectsContainer = document.getElementById('projectsContainer');
+            projectsContainer.innerHTML = '<div class="loading-message">Loading projects...</div>';
+            
+            try {
+                // Hardcoded list of project files - this is simple and will work on any hosting
+                const projectFiles = [
+                    'data-ethics.json',
+                    'project-template.json'
+                    // Add new project files here as you create them
+                ];
+                
+                let projectsData = [];
+                
+                // Load all project files
+                for (const filename of projectFiles) {
+                    try {
+                        const response = await fetch(filename);
+                        if (!response.ok) {
+                            console.error(`Failed to load project: ${filename}`);
+                            continue;
+                        }
+                        
+                        const projectData = await response.json();
+                        projectsData.push(projectData);
+                    } catch (err) {
+                        console.error(`Error processing project ${filename}:`, err);
+                    }
+                }
+                
+                // Sort projects by date (newest first)
+                projectsData.sort((a, b) => {
+                    const dateA = parseDate(a.date);
+                    const dateB = parseDate(b.date);
+                    return dateB - dateA; // Newest first
+                });
+                
+                // Clear loading message
+                projectsContainer.innerHTML = '';
+                
+                // Generate HTML for each project
+                for (const projectData of projectsData) {
+                    const cardHTML = generateCard(projectData);
+                    const tempDiv = document.createElement('div');
+                    tempDiv.innerHTML = cardHTML;
+                    projectsContainer.appendChild(tempDiv.firstElementChild);
+                }
+                
+                // If no projects were loaded successfully
+                if (projectsContainer.children.length === 0) {
+                    projectsContainer.innerHTML = '<div class="error-message">No projects found. Please check your JSON files.</div>';
+                }
+            } catch (error) {
+                console.error('Error loading projects:', error);
+                projectsContainer.innerHTML = '<div class="error-message">Failed to load projects. Please check the console for details.</div>';
             }
-        });
+        }
+
+        // Generate HTML for a single card
+        function generateCard(cardData) {
+            return `
+                <div class="card-section">
+                    <article class="research-card" onclick="openModal(this)">
+                        <header class="card-header">
+                            <img src="${cardData.image}" alt="${cardData.title}">
+                            <div class="card-date">${cardData.date}</div>
+                        </header>
+                        <div class="card-content">
+                            <div class="card-left">
+                                <h2 class="project-title">${cardData.title}</h2>
+                                <p class="card-preview">${cardData.preview}</p>
+                            </div>
+                            <div class="card-right">
+                                <section class="section">
+                                    <h3 class="section-title">${cardData.sections.researchTopics.title}</h3>
+                                    <p class="topic-content">
+                                        ${cardData.sections.researchTopics.content.join(' - ')}
+                                    </p>
+                                </section>
+
+                                <section class="section detailed-section">
+                                    <h3 class="section-title">${cardData.sections.objectives.title}</h3>
+                                    <p class="topic-content">${cardData.sections.objectives.content}</p>
+                                </section>
+
+                                <section class="section detailed-section">
+                                    <h3 class="section-title">${cardData.sections.methodology.title}</h3>
+                                    <p class="topic-content">${cardData.sections.methodology.content}</p>
+                                </section>
+
+                                <section class="section detailed-section">
+                                    <h3 class="section-title">${cardData.sections.lessons.title}</h3>
+                                    <ul class="lessons-list topic-content">
+                                        ${cardData.sections.lessons.content.map(lesson => `<li>${lesson}</li>`).join('')}
+                                    </ul>
+                                </section>
+
+                                <section class="section detailed-section">
+                                    <h3 class="section-title">${cardData.sections.collaborators.title}</h3>
+                                    <ul class="collaborator-list">
+                                        ${cardData.sections.collaborators.content.map(collaborator => `<li>${collaborator}</li>`).join('')}
+                                    </ul>
+                                </section>
+                            </div>
+                        </div>
+                    </article>
+                    <div class="card-links">
+                        <a href="${cardData.externalLinks.project}" target="_blank">Project</a>
+                        <a href="${cardData.externalLinks.publication}" target="_blank">Publication</a>
+                    </div>
+                </div>
+            `;
+        }
+
+        // Load projects when the page loads
+        document.addEventListener('DOMContentLoaded', loadProjects);
     </script>
 </body>
-</html> 
+</html>
